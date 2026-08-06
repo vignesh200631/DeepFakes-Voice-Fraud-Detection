@@ -1,0 +1,3 @@
+INPUT_FILE = r"D:\Project Folder\Mini Project\Datasets\Audios\vishal 2.wav"
+
+OUTPUT_FILE = r"D:\Project Folder\Mini Project\Datasets\Audios\cleaned_audio.wav"

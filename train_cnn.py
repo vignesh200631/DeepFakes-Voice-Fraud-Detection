@@ -1,164 +1,272 @@
 import tensorflow as tf
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Conv2D, MaxPooling2D
-from tensorflow.keras.layers import Flatten, Dense, Dropout
-from tensorflow.keras.layers import BatchNormalization
-from tensorflow.keras.layers import Rescaling
-from tensorflow.keras.callbacks import EarlyStopping
-from tensorflow.keras.callbacks import ModelCheckpoint
+from tensorflow.keras.layers import (
+    Input,
+    Conv2D,
+    MaxPooling2D,
+    Flatten,
+    Dense,
+    Dropout,
+    BatchNormalization,
+    Rescaling
+)
+from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 from tensorflow.keras.optimizers import Adam
 import matplotlib.pyplot as plt
 
-# ==========================================
-# Dataset Paths
-# ==========================================
+# =========================================================
+# DATASET PATHS
+# =========================================================
 
-TRAIN_DIR = r"D:\Project Folder\Mini Project\Dataset\train"
-VAL_DIR = r"D:\Project Folder\Mini Project\Dataset\validation"
-TEST_DIR = r"D:\Project Folder\Mini Project\Dataset\test"
+TRAIN_DIR = r"D:\Project Folder\Mini Project\Datasets\Dataset\train"
+VAL_DIR = r"D:\Project Folder\Mini Project\Datasets\Dataset\validation"
+TEST_DIR = r"D:\Project Folder\Mini Project\Datasets\Dataset\test"
 
-# ==========================================
-# Parameters
-# ==========================================
+# =========================================================
+# PARAMETERS
+# =========================================================
 
-IMG_SIZE = (128,128)
-
+IMG_SIZE = (128, 128)
 BATCH_SIZE = 16
-
 EPOCHS = 30
-
 LEARNING_RATE = 0.0001
 
-# ==========================================
-# Load Dataset
-# ==========================================
+# =========================================================
+# LOAD DATASET
+# =========================================================
+
+print("\nLoading Training Dataset...")
 
 train_ds = tf.keras.utils.image_dataset_from_directory(
     TRAIN_DIR,
     image_size=IMG_SIZE,
     batch_size=BATCH_SIZE,
-    label_mode="binary"
+    label_mode="binary",
+    shuffle=True,
+    seed=42
 )
+
+print("\nLoading Validation Dataset...")
 
 val_ds = tf.keras.utils.image_dataset_from_directory(
     VAL_DIR,
     image_size=IMG_SIZE,
     batch_size=BATCH_SIZE,
-    label_mode="binary"
+    label_mode="binary",
+    shuffle=False
 )
+
+print("\nLoading Test Dataset...")
 
 test_ds = tf.keras.utils.image_dataset_from_directory(
     TEST_DIR,
     image_size=IMG_SIZE,
     batch_size=BATCH_SIZE,
-    label_mode="binary"
+    label_mode="binary",
+    shuffle=False
 )
 
-print("\nClass Names:", train_ds.class_names)
+# =========================================================
+# CLASS INFORMATION
+# =========================================================
 
-# ==========================================
-# Normalize Images
-# ==========================================
+class_names = train_ds.class_names
 
-normalization = Rescaling(1./255)
+print("\n======================================")
+print("Classes detected:", class_names)
+print("======================================")
 
-train_ds = train_ds.map(lambda x,y:(normalization(x),y))
-val_ds = val_ds.map(lambda x,y:(normalization(x),y))
-test_ds = test_ds.map(lambda x,y:(normalization(x),y))
+# IMPORTANT:
+# TensorFlow sorts folder names alphabetically.
+#
+# human     -> 0
+# nonhuman  -> 1
+
+print("Class 0 =", class_names[0])
+print("Class 1 =", class_names[1])
+
+# =========================================================
+# DATASET PERFORMANCE
+# =========================================================
 
 AUTOTUNE = tf.data.AUTOTUNE
 
-train_ds = train_ds.cache().shuffle(1000).prefetch(AUTOTUNE)
-val_ds = val_ds.cache().prefetch(AUTOTUNE)
-test_ds = test_ds.cache().prefetch(AUTOTUNE)
+train_ds = train_ds.prefetch(buffer_size=AUTOTUNE)
+val_ds = val_ds.prefetch(buffer_size=AUTOTUNE)
+test_ds = test_ds.prefetch(buffer_size=AUTOTUNE)
 
-# ==========================================
-# CNN Model
-# ==========================================
+# =========================================================
+# BUILD CNN MODEL
+# =========================================================
 
 model = Sequential([
 
-    Conv2D(32,(3,3),
-           activation='relu',
-           input_shape=(128,128,3)),
-    BatchNormalization(),
-    MaxPooling2D(),
+    # Input
+    Input(shape=(128, 128, 3)),
 
-    Conv2D(64,(3,3),
-           activation='relu'),
-    BatchNormalization(),
-    MaxPooling2D(),
+    # Normalize RGB values from 0-255 to 0-1
+    Rescaling(1.0 / 255),
 
-    Conv2D(128,(3,3),
-           activation='relu'),
-    BatchNormalization(),
-    MaxPooling2D(),
+    # -------------------------------
+    # Convolution Block 1
+    # -------------------------------
 
-    Conv2D(256,(3,3),
-           activation='relu'),
+    Conv2D(
+        32,
+        (3, 3),
+        padding="same",
+        activation="relu"
+    ),
+
     BatchNormalization(),
-    MaxPooling2D(),
+
+    MaxPooling2D(
+        pool_size=(2, 2)
+    ),
+
+    # -------------------------------
+    # Convolution Block 2
+    # -------------------------------
+
+    Conv2D(
+        64,
+        (3, 3),
+        padding="same",
+        activation="relu"
+    ),
+
+    BatchNormalization(),
+
+    MaxPooling2D(
+        pool_size=(2, 2)
+    ),
+
+    # -------------------------------
+    # Convolution Block 3
+    # -------------------------------
+
+    Conv2D(
+        128,
+        (3, 3),
+        padding="same",
+        activation="relu"
+    ),
+
+    BatchNormalization(),
+
+    MaxPooling2D(
+        pool_size=(2, 2)
+    ),
+
+    # -------------------------------
+    # Convolution Block 4
+    # -------------------------------
+
+    Conv2D(
+        256,
+        (3, 3),
+        padding="same",
+        activation="relu"
+    ),
+
+    BatchNormalization(),
+
+    MaxPooling2D(
+        pool_size=(2, 2)
+    ),
+
+    # -------------------------------
+    # Classification
+    # -------------------------------
 
     Flatten(),
 
-    Dense(256,
-          activation='relu'),
+    Dense(
+        256,
+        activation="relu"
+    ),
 
     Dropout(0.5),
 
-    Dense(128,
-          activation='relu'),
+    Dense(
+        128,
+        activation="relu"
+    ),
 
     Dropout(0.3),
 
-    Dense(1,
-          activation='sigmoid')
-
+    # Binary classification
+    Dense(
+        1,
+        activation="sigmoid"
+    )
 ])
 
-# ==========================================
-# Compile Model
-# ==========================================
+# =========================================================
+# COMPILE MODEL
+# =========================================================
 
 model.compile(
 
-    optimizer=Adam(learning_rate=LEARNING_RATE),
+    optimizer=Adam(
+        learning_rate=LEARNING_RATE
+    ),
 
-    loss='binary_crossentropy',
+    loss="binary_crossentropy",
 
-    metrics=['accuracy']
-
+    metrics=[
+        "accuracy",
+        tf.keras.metrics.Precision(name="precision"),
+        tf.keras.metrics.Recall(name="recall"),
+        tf.keras.metrics.AUC(name="auc")
+    ]
 )
+
+# =========================================================
+# MODEL INFORMATION
+# =========================================================
+
+print("\n======================================")
+print("CNN MODEL")
+print("======================================")
 
 model.summary()
 
-# ==========================================
-# Callbacks
-# ==========================================
+# =========================================================
+# CALLBACKS
+# =========================================================
 
 early_stop = EarlyStopping(
 
-    monitor='val_loss',
+    monitor="val_loss",
 
     patience=5,
 
-    restore_best_weights=True
+    restore_best_weights=True,
 
+    verbose=1
 )
 
 checkpoint = ModelCheckpoint(
 
-    "best_model.keras",
+    filepath="best_model.keras",
 
-    monitor='val_accuracy',
+    monitor="val_accuracy",
 
-    save_best_only=True
+    save_best_only=True,
 
+    mode="max",
+
+    verbose=1
 )
 
-# ==========================================
-# Train Model
-# ==========================================
+# =========================================================
+# TRAIN CNN
+# =========================================================
+
+print("\n======================================")
+print("STARTING CNN TRAINING")
+print("======================================\n")
 
 history = model.fit(
 
@@ -168,72 +276,117 @@ history = model.fit(
 
     epochs=EPOCHS,
 
-    callbacks=[early_stop,checkpoint]
-
+    callbacks=[
+        early_stop,
+        checkpoint
+    ]
 )
 
-# ==========================================
-# Evaluate
-# ==========================================
+# =========================================================
+# TEST MODEL
+# =========================================================
 
-loss,accuracy = model.evaluate(test_ds)
+print("\n======================================")
+print("TESTING MODEL")
+print("======================================")
 
-print("\n==========================")
-print("Test Accuracy :",accuracy*100)
-print("==========================")
+results = model.evaluate(
+    test_ds,
+    verbose=1
+)
 
-# ==========================================
-# Save Model
-# ==========================================
+print("\n======================================")
+print("FINAL TEST RESULTS")
+print("======================================")
 
-model.save("deepfake_voice_detector.keras")
+for name, value in zip(model.metrics_names, results):
+    print(f"{name}: {value:.4f}")
 
-print("\nModel Saved Successfully")
+# =========================================================
+# SAVE FINAL MODEL
+# =========================================================
 
-# ==========================================
-# Accuracy Graph
-# ==========================================
+model.save(
+    "deepfake_voice_detector.keras"
+)
 
-plt.figure(figsize=(8,5))
+print("\n======================================")
+print("Model saved successfully!")
+print("======================================")
 
-plt.plot(history.history['accuracy'],
-         label='Training Accuracy')
+print("Best model  : best_model.keras")
+print("Final model : deepfake_voice_detector.keras")
 
-plt.plot(history.history['val_accuracy'],
-         label='Validation Accuracy')
+# =========================================================
+# TRAINING ACCURACY GRAPH
+# =========================================================
+
+plt.figure(figsize=(8, 5))
+
+plt.plot(
+    history.history["accuracy"],
+    label="Training Accuracy"
+)
+
+plt.plot(
+    history.history["val_accuracy"],
+    label="Validation Accuracy"
+)
 
 plt.xlabel("Epoch")
-
 plt.ylabel("Accuracy")
 
-plt.title("CNN Accuracy")
+plt.title(
+    "CNN Training and Validation Accuracy"
+)
 
 plt.legend()
 
-plt.grid()
+plt.grid(True)
+
+plt.tight_layout()
+
+plt.savefig(
+    "cnn_accuracy.png",
+    dpi=300
+)
 
 plt.show()
 
-# ==========================================
-# Loss Graph
-# ==========================================
+# =========================================================
+# TRAINING LOSS GRAPH
+# =========================================================
 
-plt.figure(figsize=(8,5))
+plt.figure(figsize=(8, 5))
 
-plt.plot(history.history['loss'],
-         label='Training Loss')
+plt.plot(
+    history.history["loss"],
+    label="Training Loss"
+)
 
-plt.plot(history.history['val_loss'],
-         label='Validation Loss')
+plt.plot(
+    history.history["val_loss"],
+    label="Validation Loss"
+)
 
 plt.xlabel("Epoch")
-
 plt.ylabel("Loss")
 
-plt.title("CNN Loss")
+plt.title(
+    "CNN Training and Validation Loss"
+)
 
 plt.legend()
 
-plt.grid()
+plt.grid(True)
+
+plt.tight_layout()
+
+plt.savefig(
+    "cnn_loss.png",
+    dpi=300
+)
 
 plt.show()
+
+print("\nTraining completed successfully!")

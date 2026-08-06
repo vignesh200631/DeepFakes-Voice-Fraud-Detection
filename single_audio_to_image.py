@@ -7,13 +7,13 @@ import numpy as np
 # INPUT AUDIO FILE
 # ==========================
 
-audio_path = r"D:\Project Folder\Mini Project\Audios\AIMohanVoice.mp3"
+audio_path = r"D:\Project Folder\Mini Project\Datasets\Audios\speech.mp3"
 
 # ==========================
 # OUTPUT IMAGE
 # ==========================
 
-output_image = r"D:\Project Folder\Mini Project\AI_Mohan_spectrogram.png"
+output_image = r"D:\Project Folder\Mini Project\image.png"
 
 # ==========================
 # LOAD AUDIO

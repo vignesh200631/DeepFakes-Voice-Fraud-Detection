@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Deepfake voice fraud detection dashboard" />
+    <title>VoxGuard | Voice fraud detection</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+    <!-- Embedded fallback: keeps this page styled even if styles.css is not served. -->
+    <style>
+      :root{--ink:#101827;--muted:#647084;--line:#dfe5ec;--canvas:#f4f6f9;--blue:#2864ec;--mint:#2cb67d;--mint-soft:#e7f8f0;--amber:#dc7f25;--white:#fff}*{box-sizing:border-box}body{margin:0;background:var(--canvas);color:var(--ink);font-family:Manrope,Arial,sans-serif}button,input,label{font:inherit}.app-shell{max-width:1180px;margin:auto;padding:26px 32px 54px}.topbar{height:48px;display:flex;align-items:center;justify-content:space-between}.brand{color:var(--ink);text-decoration:none;font-weight:800;font-size:22px;letter-spacing:-1px;display:flex;align-items:center;gap:10px}.brand span span{color:var(--blue)}.brand-mark{width:25px;height:25px;background:var(--ink);border-radius:7px;display:flex;align-items:center;justify-content:center;gap:2px}.brand-mark i{width:2px;background:#fff;border-radius:2px}.brand-mark i:first-child{height:7px}.brand-mark i:nth-child(2){height:13px}.brand-mark i:last-child{height:9px}.system-status{margin-left:auto;margin-right:18px;font:12px 'DM Mono',monospace;color:#4c5a6e}.system-status span{width:8px;height:8px;display:inline-block;background:var(--mint);border-radius:50%;margin-right:7px;box-shadow:0 0 0 4px #dff6ec}.icon-button{border:1px solid var(--line);background:#fff;width:38px;height:38px;border-radius:10px;cursor:pointer;color:#536072}.hero{padding:74px 0 52px;display:grid;grid-template-columns:1.15fr .85fr;align-items:center;gap:64px}.eyebrow{color:var(--blue);font:500 11px 'DM Mono',monospace;letter-spacing:1.4px;margin:0 0 13px}.hero h1{font-size:clamp(40px,5vw,66px);line-height:1.03;max-width:650px;letter-spacing:-3.5px;margin:0}.hero-copy{max-width:520px;color:var(--muted);line-height:1.7;margin:22px 0 0;font-size:16px}.signal-card{background:#111a2d;color:#dbe6ff;border-radius:18px;padding:23px 24px 20px;transform:rotate(2deg);box-shadow:0 18px 32px #12204724}.signal-top,.signal-foot{display:flex;justify-content:space-between;font:10px 'DM Mono',monospace;letter-spacing:1px}.signal-top b{color:#72a0ff;font-weight:400}.signal-foot{color:#71829f;letter-spacing:.4px}.signal-foot span:last-child{color:#77d9b1}.waveform{height:92px;margin:16px 0;background:repeating-linear-gradient(90deg,transparent 0 4px,#79a9ff 4px 6px,transparent 6px 9px);mask:linear-gradient(180deg,transparent 0 15%,#000 30% 68%,transparent 85%);opacity:.9;border-top:1px solid #2a3b5a;border-bottom:1px solid #2a3b5a}.workspace{display:grid;grid-template-columns:1fr 1fr;gap:22px}.panel{background:#fff;border:1px solid var(--line);border-radius:17px;padding:29px;min-height:535px;display:flex;flex-direction:column}.panel-heading{display:flex;justify-content:space-between;align-items:flex-start}.panel h2{margin:0;letter-spacing:-1px;font-size:23px}.step{color:#9aa6b7;font:13px 'DM Mono',monospace}.drop-zone{border:1.5px dashed #b7c4d5;background:#fbfcfe;border-radius:13px;margin-top:29px;min-height:214px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;transition:.2s;cursor:pointer}.drop-zone:hover,.drop-zone.dragging{border-color:var(--blue);background:#f5f8ff}.upload-icon{width:37px;height:37px;display:grid;place-items:center;border-radius:10px;background:#e7efff;color:var(--blue);font-size:22px;font-weight:600}.drop-zone h3{font-size:15px;margin:13px 0 4px}.drop-zone p,.privacy-note{font-size:12px;color:var(--muted);margin:0}.secondary-button{margin-top:15px;background:#fff;border:1px solid #ced8e5;border-radius:8px;padding:8px 13px;font-size:12px;font-weight:700;cursor:pointer}.or-divider{display:flex;align-items:center;gap:12px;color:#a0aaba;font:10px 'DM Mono',monospace;margin:20px 0}.or-divider:before,.or-divider:after{content:"";height:1px;background:var(--line);flex:1}.record-button{color:#334054;background:#fff;border:1px solid #d2dbe7;border-radius:9px;padding:12px;font-size:13px;font-weight:700;cursor:pointer}.record-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#e04545;margin-right:7px}.privacy-note{text-align:center;margin-top:17px}.results-panel{position:relative}.empty-state{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:28px}.empty-state p{color:var(--muted);font-size:14px;max-width:250px;line-height:1.6}.scan-orb{width:110px;height:110px;border-radius:50%;background:radial-gradient(circle,#dbe7ff 4%,#f0f5ff 5% 25%,transparent 26%),repeating-radial-gradient(circle,#d7e3fa 0 1px,transparent 2px 12px);display:grid;place-items:center}.scan-orb span{width:46px;height:46px;border:2px solid var(--blue);border-radius:50%;box-shadow:0 0 0 9px #e5edff}.primary-button{background:var(--ink);color:#fff;border:0;border-radius:10px;padding:14px 17px;font-weight:700;font-size:13px;cursor:pointer;transition:.2s}.primary-button:disabled{background:#d9dfe7;color:#8d98a7;cursor:not-allowed}.primary-button:not(:disabled):hover{background:var(--blue)}.primary-button span{font-size:18px;float:right;line-height:13px}.hidden{display:none!important}.audio-file{display:flex;align-items:center;background:#f6f8fb;border-radius:10px;padding:11px;margin:24px 0 18px;gap:9px}.file-icon{width:29px;height:29px;border-radius:7px;display:grid;place-items:center;background:#dce8ff;color:var(--blue)}.audio-file div{flex:1;display:grid;gap:2px}.audio-file b{font-size:12px}.audio-file small{font-size:10px;color:var(--muted)}.audio-file button{border:0;background:none;color:#8793a3;font-size:22px;cursor:pointer}.classification{display:flex;align-items:center;gap:13px;padding:17px;background:var(--mint-soft);border-radius:11px}.verdict-icon{width:38px;height:38px;border-radius:50%;background:var(--mint);display:grid;place-items:center;color:#fff;font-size:22px;font-weight:700}.verdict-label{font:500 11px 'DM Mono',monospace;letter-spacing:1px;color:#137653;margin:0 0 4px}.verdict-copy{font-size:12px;margin:0;color:#356754}.score-row{display:flex;justify-content:space-between;margin:24px 0 9px;font-size:13px}.score-row strong{font:700 23px Manrope;color:var(--mint)}.meter{height:8px;border-radius:5px;background:#e7edf1;overflow:hidden}.meter span{display:block;height:100%;width:0;border-radius:inherit;background:var(--mint);transition:width .8s ease}.metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:22px}.metrics div{border:1px solid var(--line);border-radius:8px;padding:11px}.metrics div:last-child{grid-column:1/-1}.metrics span{font-size:10px;color:var(--muted);display:block;margin-bottom:3px}.metrics b{font-size:14px}.classification.is-deepfake{background:#fff1e8}.classification.is-deepfake .verdict-icon{background:var(--amber)}.classification.is-deepfake .verdict-label{color:#a54d08}.classification.is-deepfake .verdict-copy{color:#865224}.score-row.is-deepfake strong{color:var(--amber)}.meter.is-deepfake span{background:var(--amber)}.how-it-works{padding:70px 0 0}.steps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.steps-grid article{border-top:1px solid #bdc8d5;padding:14px 10px 0 0}.steps-grid span{font:11px 'DM Mono',monospace;color:var(--blue)}.steps-grid h3{font-size:16px;margin:14px 0 6px}.steps-grid p{font-size:13px;line-height:1.6;color:var(--muted);margin:0;max-width:280px}footer{text-align:center;color:#8692a2;font:11px 'DM Mono',monospace;padding:0 0 28px}@media(max-width:750px){.app-shell{padding:18px}.system-status{display:none}.hero,.workspace{grid-template-columns:1fr}.hero{padding:48px 0 38px;gap:35px}.signal-card{max-width:400px}.panel{min-height:480px}.steps-grid{grid-template-columns:1fr;gap:25px}.hero h1{letter-spacing:-2.5px}.metrics{grid-template-columns:1fr}.metrics div:last-child{grid-column:auto}}
+    </style>
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="#top" aria-label="VoxGuard home">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span>Vox<span>Guard</span></span>
+        </a>
+        <div class="system-status"><span></span> Detection engine online</div>
+        <button class="icon-button" aria-label="Open settings">⚙</button>
+      </header>
+
+      <section class="hero" id="top">
+        <div>
+          <p class="eyebrow">AI VOICE FORENSICS</p>
+          <h1>Know who’s really speaking.</h1>
+          <p class="hero-copy">Analyze voice recordings for synthetic speech, cloning artifacts, and audio manipulation in seconds.</p>
+        </div>
+        <div class="signal-card" aria-label="Live audio detection illustration">
+          <div class="signal-top"><span>LIVE SIGNAL</span><b>01:42</b></div>
+          <div class="waveform" aria-hidden="true"></div>
+          <div class="signal-foot"><span>VOICEPRINT SCAN</span><span>98.7% clarity</span></div>
+        </div>
+      </section>
+
+      <section class="workspace" aria-label="Voice analysis workspace">
+        <div class="panel upload-panel">
+          <div class="panel-heading">
+            <div><p class="eyebrow">NEW ANALYSIS</p><h2>Add a voice sample</h2></div>
+            <span class="step">01</span>
+          </div>
+          <div class="drop-zone" id="dropZone" tabindex="0" role="button" aria-label="Upload an audio file">
+            <div class="upload-icon">↑</div>
+            <h3>Drop an audio file here</h3>
+            <p>MP3, WAV, M4A or FLAC · up to 100 MB</p>
+            <label class="secondary-button" for="audioFile">Browse files</label>
+            <input id="audioFile" type="file" accept="audio/*" hidden />
+          </div>
+          <div class="or-divider"><span>OR</span></div>
+          <button class="record-button" id="recordButton"><span class="record-dot"></span> Record a sample</button>
+          <p class="privacy-note">Your files are encrypted and automatically removed after analysis.</p>
+        </div>
+
+        <div class="panel results-panel" aria-live="polite">
+          <div class="panel-heading">
+            <div><p class="eyebrow">ANALYSIS RESULT</p><h2 id="resultTitle">Ready to analyze</h2></div>
+            <span class="step">02</span>
+          </div>
+          <div class="empty-state" id="emptyState">
+            <div class="scan-orb"><span></span></div>
+            <p>Upload or record a sample to see its voice authenticity score.</p>
+          </div>
+          <div class="result-content hidden" id="resultContent">
+            <div class="audio-file"><span class="file-icon">♪</span><div><b id="fileName">voice-sample.wav</b><small id="fileMeta">Audio sample ready</small></div><button id="clearButton" aria-label="Remove file">×</button></div>
+            <div class="classification" id="classification">
+              <div class="verdict-icon" id="verdictIcon">✓</div>
+              <div><p class="verdict-label" id="verdictLabel">GENUINE VOICE</p><p class="verdict-copy" id="verdictCopy">Natural vocal patterns detected.</p></div>
+            </div>
+            <div class="score-row"><span>Confidence score</span><strong id="scoreText">96%</strong></div>
+            <div class="meter"><span id="scoreMeter"></span></div>
+            <div class="metrics">
+              <div><span>CNN score</span><b id="cnnScore">0.040000</b></div>
+              <div><span>Risk level</span><b id="riskLevel">Low</b></div>
+              <div><span>Deepfake likelihood</span><b id="deepfakeLikelihood">4%</b></div>
+            </div>
+          </div>
+          <button class="primary-button" id="analyzeButton" disabled>Analyze voice <span>→</span></button>
+        </div>
+      </section>
+
+      <section class="how-it-works">
+        <p class="eyebrow">HOW IT WORKS</p>
+        <div class="steps-grid">
+          <article><span>01</span><h3>Submit audio</h3><p>Upload a file or record a voice sample directly in your browser.</p></article>
+          <article><span>02</span><h3>Scan patterns</h3><p>Our model reviews frequency, rhythm, and synthesis artifacts.</p></article>
+          <article><span>03</span><h3>Get clarity</h3><p>Receive a clear verdict and confidence score you can act on.</p></article>
+        </div>
+      </section>
+    </main>
+    <footer>VoxGuard · Deepfake voice fraud detection</footer>
+    <script src="app.js"></script>
+  </body>
+</html>
